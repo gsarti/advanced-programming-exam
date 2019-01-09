@@ -43,6 +43,66 @@ private:
 	/** Root node of the binary search tree. */
 	std::unique_ptr<Node> root;
 
+	/**
+	 * @brief An iterator for the binary search tree class
+	 */
+	struct Iterator
+	{
+		/** The node to which the iterator is currently referring. */
+		Node * current;
+		/**
+		 * @brief Construct an iterator on current node.
+		 * @param n The node on which the iterator is constructed.
+		 */
+		Iterator(Node * n) : current{n} {}
+		/**
+		 * @brief Operator it() for deferencing a binary search tree iterator.
+		 * @return std::pair<TKey, TValue>& Reference to current node's data in key, value format.
+		 */
+		std::pair<TKey, TValue>& operator*() const { return current->data; }
+		/**
+		 * @brief Operator ++it to advance iterator to the next node.
+		 * @return Iterator& Reference to an iterator pointing on the next node.
+		 */
+		Iterator& operator++() 
+		{
+			// TODO
+		}
+		/**
+		 * @brief Operator it++ to advance iterator to the next node.
+		 * @return Iterator Value of the current iterator before advancing it to the next node.
+		 */
+		Iterator operator++(int)
+		{
+		  Iterator it{*this};
+		  ++(*this);
+		  return it;
+		}
+		/**
+		 * @brief Operator == to check for iterators equality.
+		 * @param other The iterator to be compared with this one.
+		 * @return True if iterators point to the same node, else false
+		 */
+		bool operator==(const Iterator& other) { return current == other.current; }
+		/**
+		 * @brief Operator != to check for iterators inequality.
+		 * @param other The iterator to be compared with this one.
+		 * @return False if iterators point to the same node, else true.
+		 */
+		bool operator!=(const Iterator& other) { return current != other.current; }
+	};
+
+	/**
+	 * @brief A constant iterator for the binary search tree class
+	 */
+	struct ConstIterator : public Iterator
+	{
+		using Iterator::Iterator
+		const std::pair<TKey, TValue>& operator*() const { return Iterator::operator*(); }
+		using Iterator::operator==;
+		using Iterator::operator!=;
+	}
+
 public:
 
 };
