@@ -1,5 +1,6 @@
 ### C++ ###
 *.out
+*.o
 
 ### Python ###
 __pycache__/
