@@ -16,14 +16,18 @@ int main()
     std::pair<int, int> pair6{3,3};
     std::pair<int, int> pair7{7,7};
     
-    BinarySearchTree<int, int> bst{pair};
-    bst.print();
+    BinarySearchTree<int, int> bst;
+    std::cout << bst << std::endl;
+    bst.insert(pair);
+    std::cout << bst << std::endl;
     bst.insert(pair2);
     bst.insert(pair3);
     bst.insert(pair4);
-    bst.print();
+    std::cout << bst << std::endl;
     bst.insert(pair5);
     bst.insert(pair6);
     bst.insert(pair7);
-    bst.print();
+    std::cout << bst << std::endl;
+    BinarySearchTree<int, int> bst2{bst};
+    std::cout << bst2 << std::endl;
 }
