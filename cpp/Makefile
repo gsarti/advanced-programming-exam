@@ -1,11 +1,15 @@
 EXE = test.o
+DEFINES = 
 CXX = c++
 SRC = test/BinarySearchTreeTest.cpp
 CXXFLAGS = -std=c++11 -Wall -Wextra
 IFLAGS = -I include
+DFLAGS = -D $(DEFINES)
 
 $(EXE): $(SRC)
-		$(CXX) -g $< -o $(EXE) $(CXXFLAGS) $(IFLAGS)
+		$(CXX) -g $< -o $(EXE) $(CXXFLAGS) $(IFLAGS) $(DFLAGS)
 
 clean: 
 		@rm -fr *.o
+
+.PHONY: clean

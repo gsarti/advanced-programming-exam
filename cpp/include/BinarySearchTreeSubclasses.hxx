@@ -20,6 +20,11 @@ struct BinarySearchTree<TKey, TValue>::Node
 	/** Node's parent node. */
 	Node * parent;
 	/**
+	 * @brief Default constructor of node
+	 * This constructor is used only to create the pseudoRoot node in the DSW algorithm.
+	 */
+	Node() {}
+	/**
 	 * @brief Construct a new Node object without parent.
 	 * @param d The data to be inserted into the node.
 	 */
@@ -41,6 +46,7 @@ struct BinarySearchTree<TKey, TValue>::Node
 template <class TKey,class TValue>
 class BinarySearchTree<TKey, TValue>::Iterator
 {
+	/** Alias to make names shorter and intuitive*/
 	using Node = BinarySearchTree<TKey, TValue>::Node;
 private:
 	/** The node to which the iterator is currently referring. */
@@ -115,8 +121,15 @@ template <class TKey,class TValue>
 class BinarySearchTree<TKey,TValue>::ConstIterator : 
 public BinarySearchTree<TKey,TValue>::Iterator
 {
+	/** Alias to make names shorter and intuitive*/
 	using Iterator = BinarySearchTree<TKey, TValue>::Iterator;
 public:
+	/** Uses the same methods of the base class. */
 	using Iterator::Iterator;
+	/**
+	 * @brief Operator it() for deferencing a binary search tree iterator.
+	 * @return const std::pair<TKey, TValue>& Constant reference to current 
+	 * node's data in key, value format.
+	 */
 	const std::pair<TKey, TValue>& operator*() const { return Iterator::operator*(); }
 };
