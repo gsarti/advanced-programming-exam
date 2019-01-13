@@ -49,27 +49,27 @@ void BinarySearchTree<TKey, TValue>::copy(const std::unique_ptr<Node>& node)
     }
 }
 
-template <class TKey,class TValue>
-bool BinarySearchTree<TKey, TValue>::isBalanced(const std::unique_ptr<Node>& node, int * height)
-{
-    if(!node)
-    {
-        return true;
-    }
-    int leftHeight = 0;
-    int rightHeight = 0;
-    bool isLeftBalanced = isBalanced(node->left, &leftHeight);
-    bool isRightBalanced = isBalanced(node->right, &rightHeight);
-    *height = std::max(leftHeight, rightHeight) + 1;
-    if(abs(leftHeight - rightHeight) > 1)
-    {
-        return false;
-    }
-    else
-    {
-        return isLeftBalanced && isRightBalanced;
-    }
-}
+// template <class TKey,class TValue>
+// bool BinarySearchTree<TKey, TValue>::isBalanced(const std::unique_ptr<Node>& node, int * height)
+// {
+//     if(!node)
+//     {
+//         return true;
+//     }
+//     int leftHeight = 0;
+//     int rightHeight = 0;
+//     bool isLeftBalanced = isBalanced(node->left, &leftHeight);
+//     bool isRightBalanced = isBalanced(node->right, &rightHeight);
+//     *height = std::max(leftHeight, rightHeight) + 1;
+//     if(abs(leftHeight - rightHeight) > 1)
+//     {
+//         return false;
+//     }
+//     else
+//     {
+//         return isLeftBalanced && isRightBalanced;
+//     }
+// }
 
 template <class TKey,class TValue>
 int BinarySearchTree<TKey, TValue>::treeToVine(const std::unique_ptr<Node>& root)
@@ -193,28 +193,28 @@ std::ostream& BinarySearchTree<TKey, TValue>::stream(std::ostream& os) const
 template <class TKey,class TValue>
 typename BinarySearchTree<TKey, TValue>::Iterator BinarySearchTree<TKey, TValue>::find(TKey key)
 {
-    std::unique_ptr<Node> node(root.get());
+    Node * node = root.get();
     while(node)
     {
-        if(key > node->pair.first)
+        if(key > node->data.first)
         {
             if(!node->right)
             {
                 return end();
             }
-            node.reset(node->right.get());
+            node = node->right.get();
         }
-        else if (key < node->pair.first)
+        else if (key < node->data.first)
         {
             if(!node->left)
             {
                 return end();
             }
-            node.reset(node->left.get());
+            node = node->left.get();
         }
         else
         {
-            return Iterator{node.get()};
+            return Iterator{node};
         }
     }
     return end();
@@ -290,6 +290,6 @@ BinarySearchTree<TKey, TValue>& BinarySearchTree<TKey, TValue>::operator=(const 
 template <class TKey,class TValue>
 BinarySearchTree<TKey, TValue>& BinarySearchTree<TKey, TValue>::operator=(BinarySearchTree&& bst)
 {
-    root.reset(std::move(bst.root.get()));
+    root = std::move(bst.root);
     return *this;
 }

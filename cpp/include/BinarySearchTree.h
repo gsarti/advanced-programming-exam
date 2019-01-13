@@ -28,17 +28,6 @@ private:
 	 * @brief A node of the binary search tree with two children nodes and one parent node.
 	 */
 	struct Node;
-		/**
-	 * @brief An iterator for the binary search tree class.
-	 */
-	class Iterator;
-	/**
-	 * @brief A constant iterator for the binary search tree class.
-	 * 
-	 * The only difference with a normal iterator from which it inherits is the 
-	 * constant pair returned by the deferencing operator.
-	 */
-	class ConstIterator;
 	/** Root node of the binary search tree. */
 	std::unique_ptr<Node> root;
 	/**
@@ -62,7 +51,7 @@ private:
 	 * recursive method reduces the complexity of the algorithm
 	 * from O(n^2) to O(n), making it our approach of choice.
 	 */
-	bool isBalanced(const std::unique_ptr<Node>& node, int * height);
+	//bool isBalanced(const std::unique_ptr<Node>& node, int * height);
 	/**
 	 * @brief Balance utility function, transforms the tree into a vine.
 	 * @param root The dummy header with the actual root as its right child node.
@@ -91,6 +80,17 @@ private:
 
 
 public:
+	/**
+	 * @brief An iterator for the binary search tree class.
+	 */
+	class Iterator;
+	/**
+	 * @brief A constant iterator for the binary search tree class.
+	 * 
+	 * The only difference with a normal iterator from which it inherits is the 
+	 * constant pair returned by the deferencing operator.
+	 */
+	class ConstIterator;
 	/**
 	 * @brief Default constructor for binary search tree.
 	 */
@@ -129,10 +129,6 @@ public:
 	/**
 	 * @brief Function used to stream nodes' contents in ascending key order.
 	 * @param os The stream to which nodes are sent.
-	 * 
-	 * This function allows for iterators encapsulation, since we are accessing
-	 * them through a binary search tree member function instead of making them 
-	 * public for friend operator << below.
 	 */
 	std::ostream& stream(std::ostream& os) const;
 	/**
