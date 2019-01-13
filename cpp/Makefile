@@ -1,5 +1,5 @@
 EXE = test.o
-DEFINES = 
+DEFINES = NONE
 CXX = c++
 SRC = test/BinarySearchTreeTest.cpp
 CXXFLAGS = -std=c++11 -Wall -Wextra
