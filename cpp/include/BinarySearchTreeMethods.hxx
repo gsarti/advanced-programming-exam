@@ -49,90 +49,17 @@ void BinarySearchTree<TKey, TValue>::copy(const std::unique_ptr<Node>& node)
     }
 }
 
-// template <class TKey,class TValue>
-// bool BinarySearchTree<TKey, TValue>::isBalanced(const std::unique_ptr<Node>& node, int * height)
-// {
-//     if(!node)
-//     {
-//         return true;
-//     }
-//     int leftHeight = 0;
-//     int rightHeight = 0;
-//     bool isLeftBalanced = isBalanced(node->left, &leftHeight);
-//     bool isRightBalanced = isBalanced(node->right, &rightHeight);
-//     *height = std::max(leftHeight, rightHeight) + 1;
-//     if(abs(leftHeight - rightHeight) > 1)
-//     {
-//         return false;
-//     }
-//     else
-//     {
-//         return isLeftBalanced && isRightBalanced;
-//     }
-// }
-
 template <class TKey,class TValue>
-int BinarySearchTree<TKey, TValue>::treeToVine(const std::unique_ptr<Node>& root)
+void BinarySearchTree<TKey, TValue>::rebuildBalancedTree(std::vector<std::pair<TKey, TValue>>& nodes, int firstId, int lastId)
 {
-   Node * vineTail = root.get();
-   Node * remain = vineTail->right.get();
-   int size = 0;
-   while(remain)
-   {
-      if(!remain->left)
-      {  
-        vineTail = remain;
-        remain = remain->right.get();
-        ++size;
-      }
-      else
-      {  
-        Node * tempPtr = remain->left.get();
-        remain->left = std::move(tempPtr->right);
-        tempPtr->right.reset(remain);
-        remain = tempPtr;
-        vineTail->right.reset(tempPtr);
-      }
-   }
-   return size;
-}
-
-template <class TKey,class TValue>
-void BinarySearchTree<TKey, TValue>::vineToTree(const std::unique_ptr<Node>& root, int size)
-{
-    // int fullCount = 1;
-    // while(fullCount <= size)
-    // {
-    //     fullCount = fullCount + fullCount + 1;
-    // }
-    // fullCount /= 2;
-    // compression(root, size - fullCount);
-    // for(size = fullCount; size > 1; size /= 2)
-    // {
-    //     compression(root, size/2);
-    // }
-    int leafCount = size + 1 - pow(2, log(size + 1));
-    compression(root, leafCount);
-    size = size - leafCount;
-    while(size > 1)
+    if(firstId >= lastId)
     {
-        size /= 2;
-        compression(root, size);
+        return;
     }
-}
-
-template <class TKey,class TValue>
-void BinarySearchTree<TKey, TValue>::compression(const std::unique_ptr<Node>& root, int count)
-{
-    Node * scanner = root.get();
-    for(int i = 0; i < count; i++)
-    {
-        Node * child = scanner->right.get();
-        scanner->right.reset(child->right.get());
-        scanner = scanner->right.get();
-        child->right.reset(scanner->left.get());
-        scanner->left.reset(child);
-    }
+    int halfId = (firstId + lastId) / 2;
+    insert(nodes[halfId]);
+    rebuildBalancedTree(nodes, firstId, halfId - 1);
+    rebuildBalancedTree(nodes, halfId + 1, lastId);
 }
 
 template <class TKey,class TValue>
@@ -149,11 +76,11 @@ void BinarySearchTree<TKey, TValue>::printNode(const std::unique_ptr<Node>& node
 }
 
 template <class TKey,class TValue>
-void BinarySearchTree<TKey, TValue>::printTree(const std::unique_ptr<Node>& node, std::ostream& os, bool right, std::string indent) const
+void BinarySearchTree<TKey, TValue>::printTreeStructure(const std::unique_ptr<Node>& node, std::ostream& os, bool right, std::string indent) const
 {
     if (node->right) 
     {
-        printTree(node->right, os, true, indent + (right ? "        " : " |      "));
+        printTreeStructure(node->right, os, true, indent + (right ? "        " : " |      "));
     }
     os << indent;
     if (right) 
@@ -168,14 +95,14 @@ void BinarySearchTree<TKey, TValue>::printTree(const std::unique_ptr<Node>& node
     printNode(node, os);
     if (node->left) 
     {
-        printTree(node->left, os, false, indent + (right ? " |      " : "        "));
+        printTreeStructure(node->left, os, false, indent + (right ? " |      " : "        "));
     }
 }
 
 // Public methods
 
 template <class TKey,class TValue>
-std::ostream& BinarySearchTree<TKey, TValue>::stream(std::ostream& os) const
+std::ostream& BinarySearchTree<TKey, TValue>::printOrderedList(std::ostream& os) const
 {
     ConstIterator it{cbegin()};
     ConstIterator end{cend()};
@@ -186,6 +113,25 @@ std::ostream& BinarySearchTree<TKey, TValue>::stream(std::ostream& os) const
     for(; it != end; ++it)
     {
         os << (*it).first << ": " << (*it).second << std::endl;
+    }
+    return os;
+}
+
+template <class TKey,class TValue>
+std::ostream& BinarySearchTree<TKey, TValue>::printTree(std::ostream& os) const
+{
+    if (!root)
+    {
+        return os << "Empty";
+    }
+    if (root->right) 
+    {
+        printTreeStructure(root->right, os, true, "");
+    }
+    printNode(root, os);
+    if (root->left)
+    {
+        printTreeStructure(root->left, os, false, "");
     }
     return os;
 }
@@ -223,30 +169,19 @@ typename BinarySearchTree<TKey, TValue>::Iterator BinarySearchTree<TKey, TValue>
 template <class TKey,class TValue>
 void BinarySearchTree<TKey, TValue>::balance()
 {
-    std::unique_ptr<Node> pseudoRoot(new Node());
-    pseudoRoot->right.reset(root.get());
-    int size = treeToVine(pseudoRoot);
-    vineToTree(pseudoRoot, size);
-    root.reset(pseudoRoot->right.get());
-}
-
-template <class TKey,class TValue>
-std::ostream& BinarySearchTree<TKey, TValue>::print(std::ostream& os) const
-{
-    if (!root)
+    Iterator it{this->begin()};
+    Iterator end{this->end()};
+    if(it == end)
     {
-        return os << "Empty";
+        return;
     }
-    if (root->right) 
+    std::vector<std::pair<TKey, TValue>> nodes;
+    for(; it != end; ++it)
     {
-        printTree(root->right, os, true, "");
+        nodes.push_back(*it);
     }
-    printNode(root, os);
-    if (root->left)
-    {
-        printTree(root->left, os, false, "");
-    }
-    return os;
+    clear();
+    rebuildBalancedTree(nodes, 0, nodes.size() - 1);
 }
 
 template <class TKey,class TValue>

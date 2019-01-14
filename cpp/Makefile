@@ -1,5 +1,5 @@
 EXE = test.o
-DEFINES = NONE
+DEFINES = NONE # PTREE for tree printing
 CXX = c++
 SRC = test/BinarySearchTreeTest.cpp
 CXXFLAGS = -std=c++11 -Wall -Wextra

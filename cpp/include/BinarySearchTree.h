@@ -7,10 +7,7 @@
 
 #include <iostream> // << operator
 #include <memory> // unique pointers
-#include <algorithm> // max function
-#include <stdlib.h> // abs function
-#include <math.h> // pow and log functions
-#include <sstream> // print function
+#include <vector> // vector class
 
 #ifndef BINARYSEARCHTREE_H__
 #define BINARYSEARCHTREE_H__
@@ -43,40 +40,26 @@ private:
 	 */
 	void copy(const std::unique_ptr<Node>& node);
 	/**
-	 * @brief Recursively validates if binary search tree is balanced.
-	 * @param node The root node of the subtree, for recursion purposes.
-	 * @return int The height of the measured node.
-	 * 
-	 * Parametrizing height instead of calling it as a separate
-	 * recursive method reduces the complexity of the algorithm
-	 * from O(n^2) to O(n), making it our approach of choice.
+	 * @brief Recursively rebuilds a balanced tree from an ordered list of pairs.
+	 * @param nodes An orderer list of pairs in key,value format.
+	 * @param firstId The id of the first element of the list, for recursion purposes.
+	 * @param lastId The id of the last element of the list, for recursion purposes.
 	 */
-	//bool isBalanced(const std::unique_ptr<Node>& node, int * height);
+	void rebuildBalancedTree(std::vector<std::pair<TKey, TValue>>& nodes, int firstId, int lastId);
 	/**
-	 * @brief Balance utility function, transforms the tree into a vine.
-	 * @param root The dummy header with the actual root as its right child node.
-	 * @return int The height of the degenerate tree.
-	 * 
-	 * A vine represents a degenerate tree, basically a linked list of nodes
-	 * which is then feeded to vineToTree. It is obtained through the mean of
-	 * right rotations of the nodes.
+	 * @brief Utility function of printTree, prints the value of a node.
+	 * @param node The node to be printed.
+	 * @param os THe stream to which the value should be printed.
 	 */
-	int treeToVine(const std::unique_ptr<Node>& root);
-	/**
-	 * @brief Balance utility function, compresses a vine into a balanced tree.
-	 * @param root The dummy header with the actual root as its right child node.
-	 * @param size The size of the vine to be compressed.
-	 */
-	void vineToTree(const std::unique_ptr<Node>& root, int size);
-	/**
-	 * @brief Balance utility function, reattaches tree nodes when converting a vine
-	 * into a balanced binary search tree.
-	 * @param root The dummy header with the actual root as its right child node.
-	 * @param count The number of times the compression rotations should be performed.
-	 */
-	void compression(const std::unique_ptr<Node>& root, int count);
 	void printNode(const std::unique_ptr<Node>& node, std::ostream& os) const;
-	void printTree(const std::unique_ptr<Node>& node, std::ostream& os, bool right, std::string indent) const;
+	/**
+	 * @brief Utility function of printTree, recursively prints the tree structure.
+	 * @param node The value of the node to be printed next.
+	 * @param os The stream to which the values should be printed.
+	 * @param right If the branch is a right or a left one, for formatting purposes.
+	 * @param indent Specifies the indent of the current branch.
+	 */
+	void printTreeStructure(const std::unique_ptr<Node>& node, std::ostream& os, bool right, std::string indent) const;
 
 
 public:
@@ -127,10 +110,15 @@ public:
 	 */
 	void clear() { root.reset(); }
 	/**
-	 * @brief Function used to stream nodes' contents in ascending key order.
+	 * @brief Prints nodes in ascending key order.
 	 * @param os The stream to which nodes are sent.
 	 */
-	std::ostream& stream(std::ostream& os) const;
+	std::ostream& printOrderedList(std::ostream& os) const;
+	/**
+	 * @brief Prints the tree structure.
+	 * @param os The stream to which the nodes are sent.
+	 */
+	std::ostream& printTree(std::ostream& os) const;
 	/**
 	 * @brief Used to find a node inside the tree.
 	 * @param key The key of the node to be found.
@@ -140,15 +128,11 @@ public:
 	/**
 	 * @brief Balances the tree to preserve its performances.
 	 * 
-	 * The method is an implementation of the 1986 DSW classical algorithm for 
-	 * balancing a binary search tree, as described in the following paper:
-	 * http://web.eecs.umich.edu/~qstout/pap/CACM86.pdf
+	 * The method is inspired from the Day algorithm, taking full
+	 * advantage of the iterators and the methods we already created
+	 * to make it as simple as possible.
 	 */
 	void balance();
-	/**
-	 * @brief Pretty prints the tree to console
-	 */
-	std::ostream& print(std::ostream& os) const;
 	/**
 	 * @brief Used to begin an iteration on the binary search tree.
 	 * @return Iterator An iterator to the leftmost node of the tree. 
@@ -191,10 +175,10 @@ public:
 	 */
 	friend std::ostream& operator<<(std::ostream& os, BinarySearchTree const& bst)
 	{
-		#ifdef TREE_PRINT
-		return bst.print(os);
+		#ifdef PTREE
+		return bst.printTree(os);
 		#else
-		return bst.stream(os);
+		return bst.printOrderedList(os);
 		#endif 
 	}
 };
