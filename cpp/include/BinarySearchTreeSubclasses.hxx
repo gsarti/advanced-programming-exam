@@ -1,5 +1,5 @@
 /**
- * @file BinarySearchTreeSubclasses.h
+ * @file BinarySearchTreeSubclasses.hxx
  * @author Gabriele Sarti
  * @date 12 January 2019
  * @brief Header containing Node, Iterator and ConstIterator nested classes.
@@ -7,7 +7,9 @@
 
 #include "BinarySearchTree.h"
 
-
+/**
+ * @brief A node of the binary search tree with two children nodes and one parent node.
+ */
 template <class TKey,class TValue>
 struct BinarySearchTree<TKey, TValue>::Node
 {
@@ -42,7 +44,9 @@ struct BinarySearchTree<TKey, TValue>::Node
 	Node(const Node& n) : data{n.data}, left{nullptr}, right{nullptr}, parent{n.parent} {}
 };
 
-
+/**
+ * @brief An iterator for the binary search tree class.
+ */
 template <class TKey,class TValue>
 class BinarySearchTree<TKey, TValue>::Iterator
 {
@@ -120,7 +124,12 @@ public:
 	bool operator!=(const Iterator& other) { return currentNode != other.currentNode; }
 };
 
-
+/**
+ * @brief A constant iterator for the binary search tree class.
+ * 
+ * The only difference with a normal iterator from which it inherits is the 
+ * constant pair returned by the deferencing operator.
+ */
 template <class TKey,class TValue>
 class BinarySearchTree<TKey,TValue>::ConstIterator : 
 public BinarySearchTree<TKey,TValue>::Iterator

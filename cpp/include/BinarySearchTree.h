@@ -33,9 +33,6 @@ public:
 	class Iterator;
 	/**
 	 * @brief A constant iterator for the binary search tree class.
-	 * 
-	 * The only difference with a normal iterator from which it inherits is the 
-	 * constant pair returned by the deferencing operator.
 	 */
 	class ConstIterator;
 
