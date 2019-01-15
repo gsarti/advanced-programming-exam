@@ -58,6 +58,10 @@ public:
 	 */
 	Iterator(Node * n) : currentNode{n} {}
 	/**
+	 * @brief Returns a pointer to the node pointed to by the iterator.
+	 */
+	Node * getNode() { return currentNode; }
+	/**
 	 * @brief Operator it() for deferencing a binary search tree iterator.
 	 * @return std::pair<TKey, TValue>& Reference to current node's data in key, value format.
 	 */
@@ -126,6 +130,10 @@ public BinarySearchTree<TKey,TValue>::Iterator
 public:
 	/** Uses the same methods of the base class. */
 	using Iterator::Iterator;
+	/**
+	 * @brief Returns a constant pointer to the node pointed to by the iterator.
+	 */
+	const Node * getNode() const { return Iterator::getNode(); }
 	/**
 	 * @brief Operator it() for deferencing a binary search tree iterator.
 	 * @return const std::pair<TKey, TValue>& Constant reference to current 

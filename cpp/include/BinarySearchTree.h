@@ -25,15 +25,34 @@ private:
 	 * @brief A node of the binary search tree with two children nodes and one parent node.
 	 */
 	struct Node;
+
+public:
+	/**
+	 * @brief An iterator for the binary search tree class.
+	 */
+	class Iterator;
+	/**
+	 * @brief A constant iterator for the binary search tree class.
+	 * 
+	 * The only difference with a normal iterator from which it inherits is the 
+	 * constant pair returned by the deferencing operator.
+	 */
+	class ConstIterator;
+
+private:
 	/** Root node of the binary search tree. */
 	std::unique_ptr<Node> root;
 	/**
-	 * @brief Recursive private insert method for the binary search tree.
-	 * @param node A unique pointer to the node currently being validated for insertion.
-	 * @param d The key,value pair to be inserted inside the binary search tree.
-	 * @return True if the insert operation is successful, else false.
+	 * @brief Finds the nearest element to the element with a key inside the tree.
+	 * @param key The key of the element to be found.
+	 * @return Iterator An iterator to the closest found element.
+	 * 
+	 * If the tree is empty, it returns an iterator to nullptr -> end().
+	 * If the element is present, it returns an iterator to the element.
+	 * If the element is not present, it returns an iterator to the element
+	 * which would be the parent of the element if it was present.
 	 */
-	bool insert(std::unique_ptr<Node>& node, std::pair<TKey, TValue> d);
+	Iterator findNearest(TKey key);
 	/**
 	 * @brief Recursive private method used to create a deep copy of a binary search tree.
 	 * @param node The root node of the tree that should be copied.
@@ -61,19 +80,7 @@ private:
 	 */
 	void printTreeStructure(const std::unique_ptr<Node>& node, std::ostream& os, bool right, std::string indent) const;
 
-
 public:
-	/**
-	 * @brief An iterator for the binary search tree class.
-	 */
-	class Iterator;
-	/**
-	 * @brief A constant iterator for the binary search tree class.
-	 * 
-	 * The only difference with a normal iterator from which it inherits is the 
-	 * constant pair returned by the deferencing operator.
-	 */
-	class ConstIterator;
 	/**
 	 * @brief Default constructor for binary search tree.
 	 */
@@ -104,7 +111,7 @@ public:
 	 * will simply return false without performing any action. This design choice has been
 	 * taken in order to keep the implementation as simple as possible.
 	 */
-	bool insert(std::pair<TKey, TValue> d) { return insert(root, d); }
+	bool insert(std::pair<TKey, TValue> d);
 	/**
 	 * @brief Clears all the elements of the tree
 	 */
