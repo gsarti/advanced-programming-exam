@@ -1,5 +1,5 @@
 /**
- * @file BinarySearchTreeMethods.h
+ * @file BinarySearchTreeMethods.hxx
  * @author Gabriele Sarti
  * @date 12 January 2019
  * @brief Header containing method definitions for the BinarySearchTree class.
