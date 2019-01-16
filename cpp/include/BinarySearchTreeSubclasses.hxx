@@ -10,8 +10,8 @@
 /**
  * @brief A node of the binary search tree with two children nodes and one parent node.
  */
-template <class TKey,class TValue>
-struct BinarySearchTree<TKey, TValue>::Node
+template <class TKey,class TValue,class TCompare>
+struct BinarySearchTree<TKey, TValue, TCompare>::Node
 {
 	/** Node's data in key-value format. */
 	std::pair<TKey, TValue> data;
@@ -47,11 +47,11 @@ struct BinarySearchTree<TKey, TValue>::Node
 /**
  * @brief An iterator for the binary search tree class.
  */
-template <class TKey,class TValue>
-class BinarySearchTree<TKey, TValue>::Iterator
+template <class TKey,class TValue,class TCompare>
+class BinarySearchTree<TKey, TValue, TCompare>::Iterator
 {
 	/** Alias to make names shorter and intuitive*/
-	using Node = BinarySearchTree<TKey, TValue>::Node;
+	using Node = BinarySearchTree<TKey, TValue, TCompare>::Node;
 private:
 	/** The node to which the iterator is currently referring. */
 	Node * currentNode;
@@ -130,12 +130,12 @@ public:
  * The only difference with a normal iterator from which it inherits is the 
  * constant pair returned by the deferencing operator.
  */
-template <class TKey,class TValue>
-class BinarySearchTree<TKey,TValue>::ConstIterator : 
-public BinarySearchTree<TKey,TValue>::Iterator
+template <class TKey,class TValue,class TCompare>
+class BinarySearchTree<TKey,TValue, TCompare>::ConstIterator : 
+public BinarySearchTree<TKey,TValue, TCompare>::Iterator
 {
 	/** Alias to make names shorter and intuitive*/
-	using Iterator = BinarySearchTree<TKey, TValue>::Iterator;
+	using Iterator = BinarySearchTree<TKey, TValue, TCompare>::Iterator;
 public:
 	/** Uses the same methods of the base class. */
 	using Iterator::Iterator;
