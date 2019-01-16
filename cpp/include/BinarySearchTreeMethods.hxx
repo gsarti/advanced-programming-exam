@@ -9,13 +9,13 @@
 
 // Private Methods
 
-template <class TKey,class TValue>
-typename BinarySearchTree<TKey, TValue>::Iterator BinarySearchTree<TKey, TValue>::findNearest(TKey key)
+template <class TKey,class TValue,class TCompare>
+typename BinarySearchTree<TKey, TValue, TCompare>::Iterator BinarySearchTree<TKey, TValue, TCompare>::findNearest(const TKey& key)
 {
     Node * node = root.get();
     while(node)
     {
-        if(key > node->data.first)
+        if(compare(node->data.first, key))
         {
             if(!node->right) // Node was not found
             {
@@ -23,7 +23,7 @@ typename BinarySearchTree<TKey, TValue>::Iterator BinarySearchTree<TKey, TValue>
             }
             node = node->right.get();
         }
-        else if (key < node->data.first)
+        else if (compare(key, node->data.first))
         {
             if(!node->left) // Node was not found
             {
@@ -39,8 +39,8 @@ typename BinarySearchTree<TKey, TValue>::Iterator BinarySearchTree<TKey, TValue>
     return end(); // Tree is empty
 }
 
-template <class TKey,class TValue>
-void BinarySearchTree<TKey, TValue>::copy(const std::unique_ptr<Node>& node)
+template <class TKey,class TValue,class TCompare>
+void BinarySearchTree<TKey, TValue, TCompare>::copy(const std::unique_ptr<Node>& node)
 {
     if(node)
     {
@@ -50,8 +50,8 @@ void BinarySearchTree<TKey, TValue>::copy(const std::unique_ptr<Node>& node)
     }
 }
 
-template <class TKey,class TValue>
-void BinarySearchTree<TKey, TValue>::rebuildBalancedTree(std::vector<std::pair<TKey, TValue>>& nodes, int firstId, int lastId)
+template <class TKey,class TValue,class TCompare>
+void BinarySearchTree<TKey, TValue, TCompare>::rebuildBalancedTree(std::vector<std::pair<TKey, TValue>>& nodes, int firstId, int lastId)
 {
     if(firstId > lastId)
     {
@@ -63,14 +63,14 @@ void BinarySearchTree<TKey, TValue>::rebuildBalancedTree(std::vector<std::pair<T
     rebuildBalancedTree(nodes, halfId + 1, lastId);
 }
 
-template <class TKey,class TValue>
-void BinarySearchTree<TKey, TValue>::printNode(const std::unique_ptr<Node>& node, std::ostream& os) const
+template <class TKey,class TValue,class TCompare>
+void BinarySearchTree<TKey, TValue, TCompare>::printNode(const std::unique_ptr<Node>& node, std::ostream& os) const
 {
     os << node->data.first << ":" << node->data.second << std::endl;
 }
 
-template <class TKey,class TValue>
-void BinarySearchTree<TKey, TValue>::printTreeStructure(const std::unique_ptr<Node>& node, std::ostream& os, bool right, std::string indent) const
+template <class TKey,class TValue,class TCompare>
+void BinarySearchTree<TKey, TValue, TCompare>::printTreeStructure(const std::unique_ptr<Node>& node, std::ostream& os, bool right, std::string indent) const
 {
     if (node->right) 
     {
@@ -86,19 +86,19 @@ void BinarySearchTree<TKey, TValue>::printTreeStructure(const std::unique_ptr<No
 
 // Public methods
 
-template <class TKey,class TValue>
-bool BinarySearchTree<TKey, TValue>::insert(std::pair<TKey, TValue> d)
+template <class TKey,class TValue,class TCompare>
+bool BinarySearchTree<TKey, TValue, TCompare>::insert(std::pair<TKey, TValue> d)
 {
     Iterator nearest{this->findNearest(d.first)};
     if (nearest != end())
     {
         Node * node = nearest.getNode();
-        if(d.first > (*nearest).first)
+        if(compare((*nearest).first,d.first))
         {
             node->right.reset(new Node{d, node});
             return true;
         }
-        else if (d.first < (*nearest).first)
+        else if (compare(d.first,(*nearest).first))
         {
             node->left.reset(new Node{d, node});
             return true;
@@ -112,8 +112,8 @@ bool BinarySearchTree<TKey, TValue>::insert(std::pair<TKey, TValue> d)
     }
 }
 
-template <class TKey,class TValue>
-std::ostream& BinarySearchTree<TKey, TValue>::printOrderedList(std::ostream& os) const
+template <class TKey,class TValue,class TCompare>
+std::ostream& BinarySearchTree<TKey, TValue, TCompare>::printOrderedList(std::ostream& os) const
 {
     ConstIterator it{cbegin()};
     ConstIterator end{cend()};
@@ -128,8 +128,8 @@ std::ostream& BinarySearchTree<TKey, TValue>::printOrderedList(std::ostream& os)
     return os;
 }
 
-template <class TKey,class TValue>
-std::ostream& BinarySearchTree<TKey, TValue>::printTree(std::ostream& os) const
+template <class TKey,class TValue,class TCompare>
+std::ostream& BinarySearchTree<TKey, TValue, TCompare>::printTree(std::ostream& os) const
 {
     if (!root)
     {
@@ -147,22 +147,20 @@ std::ostream& BinarySearchTree<TKey, TValue>::printTree(std::ostream& os) const
     return os;
 }
 
-template <class TKey,class TValue>
-typename BinarySearchTree<TKey, TValue>::Iterator BinarySearchTree<TKey, TValue>::find(TKey key)
+template <class TKey,class TValue,class TCompare>
+typename BinarySearchTree<TKey, TValue, TCompare>::Iterator BinarySearchTree<TKey, TValue, TCompare>::find(TKey key)
 {
     Iterator nearest{this->findNearest(key)};
     if (nearest != end())
     {
         return (*nearest).first == key ? nearest : end();
     }
-    else
-    {
-        return end();
-    }
+    return end();
+
 }
 
-template <class TKey,class TValue>
-void BinarySearchTree<TKey, TValue>::balance()
+template <class TKey,class TValue,class TCompare>
+void BinarySearchTree<TKey, TValue, TCompare>::balance()
 {
     Iterator it{this->begin()};
     Iterator end{this->end()};
@@ -179,8 +177,8 @@ void BinarySearchTree<TKey, TValue>::balance()
     rebuildBalancedTree(nodes, 0, nodes.size() - 1);
 }
 
-template <class TKey,class TValue>
-typename BinarySearchTree<TKey, TValue>::Iterator BinarySearchTree<TKey, TValue>::begin()
+template <class TKey,class TValue,class TCompare>
+typename BinarySearchTree<TKey, TValue, TCompare>::Iterator BinarySearchTree<TKey, TValue, TCompare>::begin()
 {
     if(!root)
     {
@@ -194,8 +192,8 @@ typename BinarySearchTree<TKey, TValue>::Iterator BinarySearchTree<TKey, TValue>
     return Iterator{node};
 }
 
-template <class TKey,class TValue>
-typename BinarySearchTree<TKey, TValue>::ConstIterator BinarySearchTree<TKey, TValue>::cbegin() const
+template <class TKey,class TValue,class TCompare>
+typename BinarySearchTree<TKey, TValue, TCompare>::ConstIterator BinarySearchTree<TKey, TValue, TCompare>::cbegin() const
 {
     if(!root)
     {
@@ -209,17 +207,35 @@ typename BinarySearchTree<TKey, TValue>::ConstIterator BinarySearchTree<TKey, TV
     return ConstIterator{node};
 }
 
-template <class TKey,class TValue>
-BinarySearchTree<TKey, TValue>& BinarySearchTree<TKey, TValue>::operator=(const BinarySearchTree& bst)
+template <class TKey,class TValue,class TCompare>
+BinarySearchTree<TKey, TValue, TCompare>& BinarySearchTree<TKey, TValue, TCompare>::operator=(const BinarySearchTree& bst)
 {
     clear();
     copy(bst.root);
     return *this;
 }
 
-template <class TKey,class TValue>
-BinarySearchTree<TKey, TValue>& BinarySearchTree<TKey, TValue>::operator=(BinarySearchTree&& bst)
+template <class TKey,class TValue,class TCompare>
+BinarySearchTree<TKey, TValue, TCompare>& BinarySearchTree<TKey, TValue, TCompare>::operator=(BinarySearchTree&& bst)
 {
     root = std::move(bst.root);
     return *this;
+}
+
+template <class TKey,class TValue,class TCompare>
+TValue& BinarySearchTree<TKey, TValue, TCompare>::operator[](const TKey& key)
+{
+    std::pair<TKey, TValue> pair{key, TValue{}};
+    insert(pair); // Does nothing if node is already present
+    Iterator it{find(key)};
+    return (*it).second;
+}
+
+template <class TKey,class TValue,class TCompare>
+const TValue& BinarySearchTree<TKey, TValue, TCompare>::operator[](const TKey& key) const
+{
+    std::pair<TKey, TValue> pair{key, TValue{}};
+    insert(pair); // Does nothing if node is already present
+    ConstIterator it{find(key)};
+    return (*it).second;
 }

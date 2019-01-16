@@ -16,8 +16,9 @@
  * @brief Templated implementation of a binary search tree.
  * @tparam TKey Type of node keys, used for ordering.
  * @tparam TValue Type of node values.
+ * @tparam TCompare Type of the custom comparison iterator between nodes. Default std::less<TKey>.
  */
-template <class TKey,class TValue>
+template <class TKey,class TValue,class TCompare = std::less<TKey>>
 class BinarySearchTree
 {
 private:
@@ -49,7 +50,7 @@ private:
 	 * If the element is not present, it returns an iterator to the element
 	 * which would be the parent of the element if it was present.
 	 */
-	Iterator findNearest(TKey key);
+	Iterator findNearest(const TKey& key);
 	/**
 	 * @brief Recursive private method used to create a deep copy of a binary search tree.
 	 * @param node The root node of the tree that should be copied.
@@ -85,8 +86,9 @@ public:
 	/**
 	 * @brief Constructor for binary search tree with root node.
 	 * @param d The key,value pair for root node.
+	 * @param c The custom comparison function for tree nodes, not mandatory.
 	 */
-	BinarySearchTree(std::pair<TKey, TValue> d): root{new Node{d}} {}
+	BinarySearchTree(std::pair<TKey, TValue> d, TCompare c = TCompare{}): root{new Node{d}}, compare{c} {}
 	/**
 	 * @brief Copy constructor for binary search tree.
 	 * @param bst The binary search tree to be copied into a new one.
@@ -160,6 +162,10 @@ public:
 	 */
 	ConstIterator cend() const { return ConstIterator{nullptr}; }
 	/**
+	 * @brief Custom comparison operator for the binary search tree.
+	 */
+	TCompare compare;
+	/**
 	 * @brief Copy assignment for binary search tree.
 	 * @param bst The binary search tree to be copied into an existing one.
 	 * @return BinarySearchTree& The modified existing tree.
@@ -171,6 +177,18 @@ public:
 	 * @return BinarySearchTree& The modified existing tree.
 	 */
 	BinarySearchTree& operator=(BinarySearchTree&& bst);
+	/**
+	 * @brief Operator [] to access a node value in the tree or insert a new one.
+	 * @param key The key of the node which value should be accessed.
+	 * @return TValue& The value of the accessed node.
+	 */
+	TValue& operator[](const TKey& key);
+	/**
+	 * @brief Constant implementation of operator [] to access a node value in the tree or insert a new one.
+	 * @param key The key of the node which value should be accessed.
+	 * @return TValue& The value of the accessed node.
+	 */
+	const TValue& operator[](const TKey& key) const;
 	/**
 	 * @brief Operator << to print the binary search tree in ascending key order.
 	 * @param os The output stream to which the strings to be printed are appended.
