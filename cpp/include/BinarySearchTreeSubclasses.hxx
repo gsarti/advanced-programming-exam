@@ -10,8 +10,8 @@
 /**
  * @brief A node of the binary search tree with two children nodes and one parent node.
  */
-template <class TKey,class TValue>
-struct BinarySearchTree<TKey, TValue>::Node
+template <class TKey,class TValue,class TCompare>
+struct BinarySearchTree<TKey, TValue, TCompare>::Node
 {
 	/** Node's data in key-value format. */
 	std::pair<TKey, TValue> data;
@@ -47,24 +47,26 @@ struct BinarySearchTree<TKey, TValue>::Node
 /**
  * @brief An iterator for the binary search tree class.
  */
-template <class TKey,class TValue>
-class BinarySearchTree<TKey, TValue>::Iterator
+template <class TKey,class TValue,class TCompare>
+class BinarySearchTree<TKey, TValue, TCompare>::Iterator
 {
+	/** Used to give access to getNode method */
+	friend class BinarySearchTree;
 	/** Alias to make names shorter and intuitive*/
-	using Node = BinarySearchTree<TKey, TValue>::Node;
+	using Node = BinarySearchTree<TKey, TValue, TCompare>::Node;
 private:
 	/** The node to which the iterator is currently referring. */
 	Node * currentNode;
+	/**
+	 * @brief Returns a pointer to the node pointed to by the iterator.
+	 */
+	Node * getNode() { return currentNode; }
 public:
 	/**
 	 * @brief Construct an iterator on current node.
 	 * @param n The node on which the iterator is constructed.
 	 */
 	Iterator(Node * n) : currentNode{n} {}
-	/**
-	 * @brief Returns a pointer to the node pointed to by the iterator.
-	 */
-	Node * getNode() { return currentNode; }
 	/**
 	 * @brief Operator it() for deferencing a binary search tree iterator.
 	 * @return std::pair<TKey, TValue>& Reference to current node's data in key, value format.
@@ -130,19 +132,22 @@ public:
  * The only difference with a normal iterator from which it inherits is the 
  * constant pair returned by the deferencing operator.
  */
-template <class TKey,class TValue>
-class BinarySearchTree<TKey,TValue>::ConstIterator : 
-public BinarySearchTree<TKey,TValue>::Iterator
+template <class TKey,class TValue,class TCompare>
+class BinarySearchTree<TKey,TValue, TCompare>::ConstIterator : 
+public BinarySearchTree<TKey,TValue, TCompare>::Iterator
 {
+	/** Used to give access to getNode method */
+	friend class BinarySearchTree;
 	/** Alias to make names shorter and intuitive*/
-	using Iterator = BinarySearchTree<TKey, TValue>::Iterator;
-public:
-	/** Uses the same methods of the base class. */
-	using Iterator::Iterator;
+	using Iterator = BinarySearchTree<TKey, TValue, TCompare>::Iterator;
+private:
 	/**
 	 * @brief Returns a constant pointer to the node pointed to by the iterator.
 	 */
 	const Node * getNode() const { return Iterator::getNode(); }
+public:
+	/** Uses the same method of the base class. */
+	using Iterator::Iterator;
 	/**
 	 * @brief Operator it() for deferencing a binary search tree iterator.
 	 * @return const std::pair<TKey, TValue>& Constant reference to current 
