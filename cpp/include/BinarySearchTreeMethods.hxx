@@ -10,7 +10,7 @@
 // Private Methods
 
 template <class TKey,class TValue,class TCompare>
-typename BinarySearchTree<TKey, TValue, TCompare>::Iterator BinarySearchTree<TKey, TValue, TCompare>::findNearest(const TKey& key)
+typename BinarySearchTree<TKey, TValue, TCompare>::Iterator BinarySearchTree<TKey, TValue, TCompare>::findNearest(const TKey& key) const
 {
     Node * node = root.get();
     while(node)
@@ -148,7 +148,7 @@ std::ostream& BinarySearchTree<TKey, TValue, TCompare>::printTree(std::ostream& 
 }
 
 template <class TKey,class TValue,class TCompare>
-typename BinarySearchTree<TKey, TValue, TCompare>::Iterator BinarySearchTree<TKey, TValue, TCompare>::find(TKey key)
+typename BinarySearchTree<TKey, TValue, TCompare>::Iterator BinarySearchTree<TKey, TValue, TCompare>::find(TKey key) const
 {
     Iterator nearest{this->findNearest(key)};
     if (nearest != end())
@@ -178,7 +178,7 @@ void BinarySearchTree<TKey, TValue, TCompare>::balance()
 }
 
 template <class TKey,class TValue,class TCompare>
-typename BinarySearchTree<TKey, TValue, TCompare>::Iterator BinarySearchTree<TKey, TValue, TCompare>::begin()
+typename BinarySearchTree<TKey, TValue, TCompare>::Iterator BinarySearchTree<TKey, TValue, TCompare>::begin() const
 {
     if(!root)
     {
@@ -206,6 +206,8 @@ typename BinarySearchTree<TKey, TValue, TCompare>::ConstIterator BinarySearchTre
     }
     return ConstIterator{node};
 }
+
+// Operators
 
 template <class TKey,class TValue,class TCompare>
 BinarySearchTree<TKey, TValue, TCompare>& BinarySearchTree<TKey, TValue, TCompare>::operator=(const BinarySearchTree& bst)
@@ -235,7 +237,10 @@ template <class TKey,class TValue,class TCompare>
 const TValue& BinarySearchTree<TKey, TValue, TCompare>::operator[](const TKey& key) const
 {
     std::pair<TKey, TValue> pair{key, TValue{}};
-    insert(pair); // Does nothing if node is already present
-    ConstIterator it{find(key)};
+    ConstIterator it{find(key).getNode()};
+    if (it == cend())
+    {
+        throw; // The key is not present in the tree.
+    }
     return (*it).second;
 }
