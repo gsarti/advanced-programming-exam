@@ -9,8 +9,12 @@ __pycache__/
 
 ### VSCode ###
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
 .history
+
+### Doxygen ###
+cpp/docs/html/*
+cpp/docs/latex/*
