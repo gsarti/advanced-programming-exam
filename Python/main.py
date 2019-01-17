@@ -1,4 +1,6 @@
 from exam_solution import PostcardList
+import datetime
+import unittest
 
 class Test(unittest.TestCase):
 
@@ -26,7 +28,7 @@ class Test(unittest.TestCase):
         for i in [0,1,4,6]: 
             dr_test.append(\
                 self._PstLst[i].getPostcardsByDateRange(date_range=\
-                   (datetime.datetime.strptime('2008-1-1', "%Y-%m-%d"),\
+		   (datetime.datetime.strptime('2008-1-1', "%Y-%m-%d"),\
                     datetime.datetime.strptime('2010-12-31', "%Y-%m-%d"))))
         self.assertListEqual(sorted(dr_test[0]),sorted(['date:2010-06-23; from:Sneezy; to:Alice;\n', 'date:2009-12-12; from:Dopey; to:Peter;\n', 'date:2008-03-23; from:Sneezy; to:Pluto;\n', 'date:2008-06-03; from:Goofy; to:Pluto;\n'])) 
         self.assertEqual(len(dr_test[1]),1)
