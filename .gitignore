@@ -16,5 +16,5 @@ __pycache__/
 .history
 
 ### Doxygen ###
-cpp/docs/html/*
-cpp/docs/latex/*
+c++/docs/html/*
+c++/docs/latex/*
