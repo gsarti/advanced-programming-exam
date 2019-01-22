@@ -13,8 +13,10 @@
 template <class TKey,class TValue,class TCompare>
 struct BinarySearchTree<TKey, TValue, TCompare>::Node
 {
-	/** Node's data in key-value format. */
-	std::pair<TKey, TValue> data;
+	/** Node's data in key-value format. 
+	 * Const was added to the key to ensure tree consistency.
+	*/
+	std::pair<const TKey, TValue> data;
 	/** Node's left child node (smaller key). */
 	std::unique_ptr<Node> left;
 	/** Node's right child node (bigger key). */
@@ -71,7 +73,7 @@ public:
 	 * @brief Operator it() for deferencing a binary search tree iterator.
 	 * @return std::pair<TKey, TValue>& Reference to current node's data in key, value format.
 	 */
-	std::pair<TKey, TValue>& operator*() const { return currentNode->data; }
+	std::pair<const TKey, TValue>& operator*() const { return currentNode->data; }
 	/**
 	 * @brief Operator ++it to advance iterator to the next node.
 	 * @return Iterator& Reference to an iterator pointing on the next node.
@@ -153,5 +155,5 @@ public:
 	 * @return const std::pair<TKey, TValue>& Constant reference to current 
 	 * node's data in key, value format.
 	 */
-	const std::pair<TKey, TValue>& operator*() const { return Iterator::operator*(); }
+	const std::pair<const TKey, TValue>& operator*() const { return Iterator::operator*(); }
 };
