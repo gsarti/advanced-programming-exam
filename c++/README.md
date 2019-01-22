@@ -18,6 +18,6 @@ The command `make test.o` generates a `test.o` executable that encompasses all t
 
 The command `make benchmark.o` generates a `benchmark.o` executable that, if run, produces the whole benchmark data in the form of file textes inside the benchmark_results folder. **Disclaimer:** The execution is serial and it may take a long time.
 
-The command `make docs` generates the documentation inside the docs folder.
+The command `make docs` generates the documentation inside the docs folder. Adding the `DEFINES=PTREE` argument after any of those commands makes tree printing in console the default.
 
 To execute all the commands listed above, simply use `make`. To remove all the files created that way except for benchmarks data, which takes a long time to be recreated and should be deleted manually if needed, use `make clean`.
