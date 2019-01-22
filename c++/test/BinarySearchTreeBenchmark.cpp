@@ -1,9 +1,11 @@
 /**
- * @file Benchmarck.cpp
+ * @file BinarySearchTreeBenchmark.cpp
  * @author Giulia Franco
  * @date 19 January 2019
- * @brief Source file to perform Benchmarck on the BinarySearchTree class.
+ * @brief Source file to perform Benchmark on the BinarySearchTree class.
  */
+
+#include "BinarySearchTree.h"
 #include <memory>
 #include <algorithm>
 #include <string>
@@ -13,17 +15,19 @@
 #include <map>
 #include <unordered_map>
 #include <chrono>
-#include "BinarySearchTree.h"
 #include <fstream>
 #include <iostream>
 
 using namespace std;
 
 int N_max=20000; 
-//First benchmark: Define 2 BinarySearchTree of int,float. The function will measure time for find() methods for different N size
-//of the trees and print the result on file. 
-//Input: string with "int"/"float" type of pair<type,type> (for semplicity we consider just one type for couple value-key),empty BinarySearchTree.
-//Accessing element using operator[], so we expect an overestimation.
+
+// First benchmark: Define 2 BinarySearchTree of int,float. The function will measure time 
+// for find() methods for different N size of the trees and print the result on file. 
+// Input: string with "int"/"float" type of pair<type,type> (for semplicity we consider
+// just one type for couple value-key),empty BinarySearchTree.
+// Accessing element using operator[], so we expect an overestimation.
+
 template<class myType>
 void Timing(myType B,ofstream& myfile){
         myfile<<"N   total time    time per operation   Log(N)"<<endl;
@@ -39,9 +43,9 @@ void Timing(myType B,ofstream& myfile){
 
 };
 
-void Bechmarck_different_type(string type){
+void Benchmark_different_type(string type){
 	ofstream myfile;
-        myfile.open ("test/Benchmarck_different_"+type+"1.txt");
+        myfile.open ("test/benchmark_results/benchmark_different_"+type+"1.txt");
 	if(type=="int"){
 		BinarySearchTree<int,int> b;
 		for(int i=0;i<N_max;++i){
@@ -68,7 +72,7 @@ void Bechmarck_different_type(string type){
                 for(int j=0;j<N_max;j+=50){
                         auto begin = chrono::high_resolution_clock::now();
                         for(int i=0;i<j;++i){
-				b.find(val[i]]);
+				b.find(val[i]);
                         }
                         auto end = chrono::high_resolution_clock::now();
                         auto total=chrono::duration_cast<chrono::microseconds>(end-begin).count();
@@ -80,9 +84,9 @@ void Bechmarck_different_type(string type){
 };
 
 //Comparing unbalanced BinarySearchTree, balanced BinarySearchTree,map and unordered_map.
-void Bechmarck_Map(){
+void Benchmark_Map(){
 	ofstream myfile;
-        myfile.open ("test/Benchmarck_noBalance.txt");
+        myfile.open ("test/benchmark_results/benchmark_unbalanced.txt");
         BinarySearchTree<int,int> b;
         for(int i=0;i<N_max;++i){
         	pair<int, int> pair{i,i};
@@ -91,13 +95,13 @@ void Bechmarck_Map(){
 	Timing(b,myfile);
      	myfile.close();
 	ofstream myfile1;
-	myfile1.open ("test/Benchmarck_Balance.txt");
+	myfile1.open ("test/benchmark_results/benchmark_balanced.txt");
 	b.balance();
 	Timing(b,myfile1);
 	myfile1.close();
 	map<int,int> Bench;
 	ofstream myfile2;
-        myfile2.open ("test/Benchmarck_Map.txt");
+        myfile2.open ("test/benchmark_results/benchmark_map.txt");
 	for(int i=0;i<N_max;++i){
                 pair<int, int> pair{i,i};
                 Bench.insert(pair);
@@ -106,7 +110,7 @@ void Bechmarck_Map(){
         myfile2.close();
 	unordered_map<int,int> UnBench;
         ofstream myfile3;
-        myfile3.open ("test/Benchmarck_UnOrderedMap.txt");
+        myfile3.open ("test/benchmark_results/benchmark_unordered_map.txt");
         for(int i=0;i<N_max;++i){
                 pair<int, int> pair{i,i};
                 UnBench.insert(pair);
@@ -117,8 +121,8 @@ void Bechmarck_Map(){
 
 int main(){
 	
-	Bechmarck_different_type("int");
-	Bechmarck_different_type("double");
-	Bechmarck_Map();
+	Benchmark_different_type("int");
+	Benchmark_different_type("double");
+	Benchmark_Map();
 	return 0;
 };
