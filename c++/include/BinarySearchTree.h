@@ -50,7 +50,7 @@ private:
 	 * If the element is not present, it returns an iterator to the element
 	 * which would be the parent of the element if it was present.
 	 */
-	Iterator findNearest(const TKey& key);
+	Iterator findNearest(const TKey& key) const;
 	/**
 	 * @brief Recursive private method used to create a deep copy of a binary search tree.
 	 * @param node The root node of the tree that should be copied.
@@ -100,7 +100,7 @@ public:
 	 * @brief Move constructor for binary search tree.
 	 * @param bst The binary search tree to be moved into a new one.
 	 */
-	BinarySearchTree(BinarySearchTree&& bst) : root{std::move(bst.root)} {}
+	BinarySearchTree(BinarySearchTree&& bst) noexcept : root{std::move(bst.root)} {}
 	/**
 	 * @brief Insert a new node in the binary search tree.
 	 * @param d The key,value pair to be inserted.
@@ -130,7 +130,7 @@ public:
 	 * @param key The key of the node to be found.
 	 * @return Iterator An iterator to the node if it's found, else to end().
 	 */
-	Iterator find(TKey key);
+	Iterator find(TKey key) const;
 	/**
 	 * @brief Balances the tree to preserve its performances.
 	 * 
@@ -144,12 +144,12 @@ public:
 	 * @return Iterator An iterator to the leftmost node of the tree. 
 	 * aka the one with the lowest key value.
 	 */
-	Iterator begin();
+	Iterator begin() const;
 	/**
 	 * @brief Used to finish an iteration on the binary search tree.
 	 * @return Iterator Returns an iterator to nullptr.
 	 */
-	Iterator end() { return Iterator{nullptr}; }
+	Iterator end() const { return Iterator{nullptr}; }
 	/**
 	 * @brief Used to begin an iteration on the binary search tree.
 	 * @return ConstIterator A constant iterator to the leftmost node of the tree.
