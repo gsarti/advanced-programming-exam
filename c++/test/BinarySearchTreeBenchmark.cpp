@@ -115,7 +115,7 @@ void Benchmark_Map(){
                 pair<int, int> pair{i,i};
                 UnBench.insert(pair);
                 }
-	Timing(UnBench,myfile2);
+	Timing(UnBench,myfile3);
         myfile3.close();
 };
 
